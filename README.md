@@ -9,6 +9,13 @@ depois de logar ter a possibilidade de voltar pra a tela de checkout
 tem que ter o role de admin e user
 recomenda trabalhar com jwt
 fazer o role de admin na tabela de usuário e para criar o admin somente pela API
+fazer controle de estoque, se o produto não tiver estoque, não pode adicionar no carrinho
+produtos com mais de uma cor e tamanho precisam ter o sku correspondentes
 
 npx prisma generate
 In the future, you need to run this command after every change to your Prisma models to update your generated Prisma Client.
+
+npm i bcrypt - para encriptar as senhas no banco de dados
+npm install -D @types/bcrypt - para typescript
+
+https://www.youtube.com/watch?v=pRglv1AsrQs tutorial seguido
