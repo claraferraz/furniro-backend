@@ -3,7 +3,7 @@ import { CreateUserDTO } from './createUserDTO';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma.service';
 
-interface UserRegisterResponse {
+export interface UserRegisterResponse {
   id: string;
   username: string;
   email: string;
