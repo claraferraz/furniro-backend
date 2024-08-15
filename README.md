@@ -11,6 +11,8 @@ recomenda trabalhar com jwt
 fazer o role de admin na tabela de usuário e para criar o admin somente pela API
 fazer controle de estoque, se o produto não tiver estoque, não pode adicionar no carrinho
 produtos com mais de uma cor e tamanho precisam ter o sku correspondentes
+fazer a requisição para as paginações do lado do servidor
+as filtagens também
 
 npx prisma generate
 In the future, you need to run this command after every change to your Prisma models to update your generated Prisma Client.
