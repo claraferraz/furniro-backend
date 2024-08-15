@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma.service';
 import { LoginUserDTO } from './loginUserDTO';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 
 export interface UserLoginResponse {
   token?: string;
@@ -16,12 +17,25 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  async registerUser(payload: CreateUserDTO): Promise<UserLoginResponse> {
-    const existingUser = await this.prisma.user.findFirst({
+  async getUserByEmail(email: string): Promise<Omit<User, 'password'>> {
+    const user = await this.prisma.user.findFirst({
       where: {
-        email: payload.email,
+        email: email,
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+        password: false,
       },
     });
+
+    return user;
+  }
+
+  async registerUser(payload: CreateUserDTO): Promise<UserLoginResponse> {
+    const existingUser = await this.getUserByEmail(payload.email);
 
     if (existingUser) {
       throw new BadRequestException('user already exists', {
@@ -34,24 +48,20 @@ export class UsersService {
     //save the user in the db
     payload.password = hash;
     //return id, username and email
-    await this.prisma.user.create({
+    const createdUser = await this.prisma.user.create({
       data: payload,
       select: {
         id: true,
         username: true,
         email: true,
+        role: true,
+        password: false,
       },
     });
     return {
-      token: this.jwtService.sign(
-        {
-          email: existingUser.email,
-          id: existingUser.id,
-        },
-        {
-          secret: process.env.JWT_KEY,
-        },
-      ),
+      token: this.jwtService.sign(createdUser, {
+        secret: process.env.JWT_KEY,
+      }),
     };
   }
 
@@ -78,13 +88,18 @@ export class UsersService {
         description: 'email or password are not correct',
       });
     }
+
+    const jwtPayload = {
+      id: existingUser.id,
+      email: existingUser.email,
+      username: existingUser.username,
+      role: existingUser.role,
+    };
+
     return {
-      token: this.jwtService.sign(
-        { email: existingUser.email, id: existingUser.id },
-        {
-          secret: process.env.JWT_KEY,
-        },
-      ),
+      token: this.jwtService.sign(jwtPayload, {
+        secret: process.env.JWT_KEY,
+      }),
     };
   }
 }
