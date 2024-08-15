@@ -43,9 +43,15 @@ export class UsersService {
       },
     });
     return {
-      token: this.jwtService.sign(payload.email, {
-        secret: process.env.JWT_KEY,
-      }),
+      token: this.jwtService.sign(
+        {
+          email: existingUser.email,
+          id: existingUser.id,
+        },
+        {
+          secret: process.env.JWT_KEY,
+        },
+      ),
     };
   }
 
@@ -73,9 +79,12 @@ export class UsersService {
       });
     }
     return {
-      token: this.jwtService.sign(payload.email, {
-        secret: process.env.JWT_KEY,
-      }),
+      token: this.jwtService.sign(
+        { email: existingUser.email, id: existingUser.id },
+        {
+          secret: process.env.JWT_KEY,
+        },
+      ),
     };
   }
 }
