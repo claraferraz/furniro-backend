@@ -25,46 +25,80 @@ model User {
 
 model Product {
   id          Int      @id @default(autoincrement())
-  image       String
+  imgID       Int
   title       String
-  description String
-  price       Float
-  detail      Int?
+  subtitle    String
+  description String   @db.Text
+  price       Decimal  @db.Money
+  discount    Int?
   new         Boolean? @default(false)
-  color       String?
-  size        String?
-  stock       Int      @default(0)
-  orders Order[]
+  category    String
+  tags        Int
+
+  tag            Tags             @relation(fields: [tags], references: [id])
+  images         ProductImages    @relation(fields: [imgID], references: [id])
+  ProductDetails ProductDetails[]
+}
+
+model ProductImages {
+  id          Int    @id @default(autoincrement())
+  defaultImag String @unique
+  imgOne      String @unique
+  imgTwo      String @unique
+  imgThree    String @unique
+  imgFour     String @unique
+
+  Product Product[]
+}
+
+model Tags {
+  id  Int    @id @default(autoincrement())
+  tag String @unique
+
+  Product Product[]
+}
+
+model ProductDetails {
+  color     String?
+  size      String?
+  stock     Int     @default(0)
+  detailId  Int     @default(autoincrement())
+  productId Int     @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id])
+  orders    Order[]
+
+  @@id(name: "sku", [productId, detailId])
 }
 
 model Order {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  createdAt DateTime @default(now())
-  product Product @relation(fields: [productId], references: [id])
-  productId Int
-  sku String
-  total Decimal @db.Money
-  shipping Shipping @relation(fields: [shippingId], references: [id])
-  shippingId String
-  }
+  id             String   @id @default(uuid())
+  userId         String
+  createdAt      DateTime @default(now())
+  productId      Int
+  productDetails Int
+  amount         Int
+  total          Decimal  @db.Money
+  shippingId     String
+
+  user     User           @relation(fields: [userId], references: [id])
+  product  ProductDetails @relation(fields: [productId, productDetails], references: [productId, detailId])
+  shipping Shipping       @relation(fields: [shippingId], references: [id])
+}
 
 model Shipping {
-  id          String   @id @default(uuid())
+  id            String  @id @default(uuid())
   userFirstName String
-  userLastName String
-  companyName String?
-  zipCode String @db.Char(5)
-  region String
-  address String
-  city String
-  province String
-  addOnAddress String?
-  email String
-  Information String? @db.Text
-  order Order[]
-
+  userLastName  String
+  companyName   String?
+  zipCode       String  @db.Char(5)
+  region        String
+  address       String
+  city          String
+  province      String
+  addOnAddress  String?
+  email         String
+  Information   String? @db.Text
+  order         Order[]
 }
 
 enum Role {
