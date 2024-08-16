@@ -32,7 +32,6 @@ model Product {
   discount    Int?
   new         Boolean? @default(false)
   category    String
-  tags        Int
 
   images         ProductImages[]
   ProductDetails ProductDetails[]
