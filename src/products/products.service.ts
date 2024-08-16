@@ -48,8 +48,27 @@ export class ProductsService {
       data: product,
     });
 
-    return {
-      id: createdProduct.id,
-    };
+    await this.prisma.productImages.createMany({
+      data: images.map((imageUrl) => {
+        return {
+          productId: createdProduct.id,
+          url: imageUrl,
+        };
+      }),
+    });
+
+    return await this.prisma.product.findFirst({
+      where: {
+        id: createdProduct.id,
+      },
+      include: {
+        images: {
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+      },
+    });
   }
 }
