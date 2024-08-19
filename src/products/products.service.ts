@@ -1,9 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { ProductRegisterDTO } from './productRegisterDTO';
+import { ProductDetailsDTO } from './productDetailsDTO';
 
 export interface ProductRegisterResponse {
   id?: number;
+}
+export interface ProductDetailsRegisterResponse {
+  sku: {
+    detailId: number;
+    productId: number;
+  };
 }
 
 @Injectable()
@@ -27,6 +34,25 @@ export class ProductsService {
       },
     });
 
+    return product;
+  }
+
+  async getProductById(id: number) {
+    const product = await this.prisma.product.findFirst({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        title: true,
+        subtitle: true,
+        description: true,
+        price: true,
+        discount: true,
+        new: true,
+        category: true,
+      },
+    });
     return product;
   }
 
@@ -70,5 +96,30 @@ export class ProductsService {
         },
       },
     });
+  }
+
+  async registerProductDetails(payload: ProductDetailsDTO, productId: number) {
+    const product = this.getProductById(productId);
+
+    if (!product) {
+      throw new BadRequestException("product doesn't exists", {
+        cause: new Error(),
+        description: 'id not registered',
+      });
+    }
+
+    const createdDetails = await this.prisma.productDetails.create({
+      data: {
+        color: payload.color,
+        size: payload.size,
+        stock: payload.stock,
+        productId: (await product).id,
+      },
+    });
+
+    return {
+      ...createdDetails,
+      sku: `${createdDetails.productId}${createdDetails.detailId}`,
+    };
   }
 }

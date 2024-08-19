@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { ProductRegisterDTO } from './productRegisterDTO';
 import { ProductsService } from './products.service';
 import { AuthGuard } from 'src/users/auth.guard';
+import { ProductDetailsDTO } from './productDetailsDTO';
 
 @Controller('products')
 export class ProductsController {
@@ -16,17 +17,19 @@ export class ProductsController {
     return await this.productsService.registerBaseProduct(productRegisterDTO);
   }
 
-  /*@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Post('/register/:productId')
   async createDetails(
     @Body()
-    productRegisterDTO: ProductRegisterDTO,
+    productDetailsDTO: ProductDetailsDTO,
+    @Param('productId') id: number,
   ) {
-    return await this.productsService.registerDetailedProduct(
-      productRegisterDTO,
+    return await this.productsService.registerProductDetails(
+      productDetailsDTO,
+      id,
     );
   }
-
+  /*
   //pegar produtos sem filtro
   @Get('/')
 
