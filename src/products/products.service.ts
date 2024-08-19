@@ -12,6 +12,10 @@ export interface ProductDetailsRegisterResponse {
     productId: number;
   };
 }
+export interface TagsDTO {
+  id: number;
+  name: string;
+}
 
 @Injectable()
 export class ProductsService {
@@ -68,7 +72,7 @@ export class ProductsService {
       });
     }
 
-    const { images, ...product } = payload;
+    const { images, tags, ...product } = payload;
 
     const createdProduct = await this.prisma.product.create({
       data: product,
@@ -83,6 +87,15 @@ export class ProductsService {
       }),
     });
 
+    await this.prisma.productTags.createMany({
+      data: tags.map((tagIds) => {
+        return {
+          productId: createdProduct.id,
+          tagId: tagIds,
+        };
+      }),
+    });
+
     return await this.prisma.product.findFirst({
       where: {
         id: createdProduct.id,
@@ -92,6 +105,12 @@ export class ProductsService {
           select: {
             id: true,
             url: true,
+          },
+        },
+        ProductTags: {
+          select: {
+            id: true,
+            tagId: true,
           },
         },
       },
@@ -121,5 +140,27 @@ export class ProductsService {
       ...createdDetails,
       sku: `${createdDetails.productId}${createdDetails.detailId}`,
     };
+  }
+
+  async registerTags(payload: TagsDTO): Promise<TagsDTO> {
+    const existingTag = await this.prisma.tags.findFirst({
+      where: {
+        name: payload.name,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    if (existingTag) {
+      throw new Error('Tag already exists');
+    }
+
+    return await this.prisma.tags.create({
+      data: {
+        name: payload.name,
+      },
+    });
   }
 }

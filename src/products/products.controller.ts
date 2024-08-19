@@ -1,6 +1,6 @@
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { ProductRegisterDTO } from './productRegisterDTO';
-import { ProductsService } from './products.service';
+import { ProductsService, TagsDTO } from './products.service';
 import { AuthGuard } from 'src/users/auth.guard';
 import { ProductDetailsDTO } from './productDetailsDTO';
 
@@ -28,6 +28,12 @@ export class ProductsController {
       productDetailsDTO,
       id,
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/tags/register')
+  async createTags(@Body() tags: TagsDTO) {
+    return await this.productsService.registerTags(tags);
   }
   /*
   //pegar produtos sem filtro

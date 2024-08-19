@@ -38,4 +38,8 @@ export class ProductRegisterDTO {
   @IsArray()
   @IsUrl({}, { each: true })
   images: string[];
+
+  @IsArray()
+  @IsNumber({}, { each: true })
+  tags: number[];
 }
