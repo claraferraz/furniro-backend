@@ -1,14 +1,14 @@
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { ProductRegisterDTO } from './productRegisterDTO';
 import { ProductsService, TagsDTO } from './products.service';
-import { AuthGuard } from 'src/users/auth.guard';
+import { AdminGuard } from 'src/users/admin.guard';
 import { ProductDetailsDTO } from './productDetailsDTO';
 
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Post('/register')
   async create(
     @Body()
@@ -17,7 +17,7 @@ export class ProductsController {
     return await this.productsService.registerBaseProduct(productRegisterDTO);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Post('/register/:productId')
   async createDetails(
     @Body()
@@ -30,7 +30,7 @@ export class ProductsController {
     );
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Post('/tags/register')
   async createTags(@Body() tags: TagsDTO) {
     return await this.productsService.registerTags(tags);
