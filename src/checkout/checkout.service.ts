@@ -179,8 +179,18 @@ export class CheckoutService {
       },
     });
 
+    if (!order.total || parseFloat(order.total.toFixed(2)) <= 0) {
+      throw new HttpException(`order total not valid`, HttpStatus.BAD_REQUEST);
+    }
+
     const updateStock = async () => {
       const productsList = order.products.map((p) => {
+        if (p.amount > p.product.stock) {
+          throw new HttpException(
+            `${p.productId}${p.productDetails} amount not valid`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
         return {
           sku: {
             productId: p.productId,
