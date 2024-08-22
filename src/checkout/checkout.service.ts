@@ -7,6 +7,19 @@ import { CartDTO } from './cartDTO';
 export class CheckoutService {
   constructor(private prisma: PrismaService) {}
 
+  async deleteOrder(orderId: string) {
+    await this.prisma.orderProduct.deleteMany({
+      where: {
+        orderId: orderId,
+      },
+    });
+    await this.prisma.order.delete({
+      where: {
+        id: orderId,
+      },
+    });
+  }
+
   async createCartOrder(payload: CartDTO, user) {
     const createdOrder = await this.prisma.order.create({
       data: {
@@ -14,16 +27,18 @@ export class CheckoutService {
       },
     });
 
-    await this.prisma.orderProduct.createMany({
-      data: payload.products.map(({ productId, detailsId, amount }) => {
-        return {
-          productId: productId,
-          productDetails: detailsId,
-          amount: amount,
-          orderId: createdOrder.id,
-        };
-      }),
-    });
+    if (createdOrder.id) {
+      await this.prisma.orderProduct.createMany({
+        data: payload.products.map(({ productId, detailsId, amount }) => {
+          return {
+            productId: productId,
+            productDetails: detailsId,
+            amount: amount,
+            orderId: createdOrder.id,
+          };
+        }),
+      });
+    }
 
     //calc prices
     const order = await this.prisma.order.findFirst({
@@ -91,6 +106,7 @@ export class CheckoutService {
         const sku = `${detail.productId}${detail.detailId}`;
 
         if (amount === null) {
+          this.deleteOrder(order.id);
           throw new HttpException(
             `product ${sku} was not found in the order`,
             HttpStatus.BAD_REQUEST,
@@ -98,6 +114,7 @@ export class CheckoutService {
         }
 
         if (amount > stock) {
+          this.deleteOrder(order.id);
           throw new HttpException(
             `product ${sku} doesn't have enough stock available`,
             HttpStatus.BAD_REQUEST,
@@ -129,12 +146,6 @@ export class CheckoutService {
     };
 
     const totalValue = await calcTotal();
-
-    await this.prisma.order.delete({
-      where: {
-        id: createdOrder.id,
-      },
-    });
 
     await this.prisma.order.update({
       where: {

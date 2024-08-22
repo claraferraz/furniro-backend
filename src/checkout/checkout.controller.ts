@@ -5,6 +5,7 @@ import {
   Post,
   UseGuards,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/users/auth.guard';
 import { ShippingDTO } from './shippingDTO';
@@ -37,5 +38,11 @@ export class CheckoutController {
       user,
       orderId,
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('/:orderId')
+  async deleteOrder(@Param('orderId') orderId: string) {
+    return await this.deleteOrder(orderId);
   }
 }
