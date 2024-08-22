@@ -60,6 +60,18 @@ export class ProductsService {
     return product;
   }
 
+  async getProductDetails(id: number) {
+    const product = await this.prisma.productDetails.findFirst({
+      where: {
+        detailId: id,
+      },
+      include: {
+        product: true,
+      },
+    });
+    return product;
+  }
+
   async registerBaseProduct(
     payload: ProductRegisterDTO,
   ): Promise<ProductRegisterResponse> {
@@ -162,5 +174,57 @@ export class ProductsService {
         name: payload.name,
       },
     });
+  }
+
+  async getProductsList(
+    order: string | undefined,
+    page: number = 0,
+    offset: number = 16,
+  ) {
+    Number.isNaN(page) ? (page = 1) : (page = page);
+    Number.isNaN(offset) ? (offset = 16) : (offset = offset);
+
+    let productList;
+    switch (order) {
+      case 'AlphaAsc':
+        productList = await this.prisma.product.findMany({
+          skip: (page - 1) * offset,
+          take: offset,
+          orderBy: {
+            title: 'asc',
+          },
+        });
+      case 'AlphaDesc':
+        productList = await this.prisma.product.findMany({
+          skip: (page - 1) * offset,
+          take: offset,
+          orderBy: {
+            title: 'desc',
+          },
+        });
+      case 'PriceAsc':
+        productList = await this.prisma.product.findMany({
+          skip: (page - 1) * offset,
+          take: offset,
+          orderBy: {
+            price: 'asc',
+          },
+        });
+      case 'PriceDesc':
+        productList = await this.prisma.product.findMany({
+          skip: (page - 1) * offset,
+          take: offset,
+          orderBy: {
+            title: 'desc',
+          },
+        });
+      default:
+        productList = await this.prisma.product.findMany({
+          skip: (page - 1) * offset,
+          take: offset,
+        });
+    }
+
+    return productList;
   }
 }
