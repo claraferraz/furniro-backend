@@ -11,7 +11,9 @@ import { AuthGuard } from 'src/users/auth.guard';
 import { ShippingDTO } from './shippingDTO';
 import { CheckoutService } from './checkout.service';
 import { CartDTO } from './cartDTO';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('checkout')
 @Controller('checkout')
 export class CheckoutController {
   constructor(private checkoutService: CheckoutService) {}

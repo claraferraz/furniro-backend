@@ -18,7 +18,7 @@ export class CreateUserDTO {
   @IsString()
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: [Role.ADMIN, Role.USER] })
   @IsEnum(Role)
   role: Role;
 }
