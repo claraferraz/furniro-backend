@@ -193,6 +193,14 @@ export class ProductsService {
           orderBy: {
             title: 'asc',
           },
+          include: {
+            images: {
+              select: {
+                url: true,
+              },
+            },
+            ProductDetails: true,
+          },
         });
         break;
       case 'AlphaDesc':
@@ -201,6 +209,14 @@ export class ProductsService {
           take: offset,
           orderBy: {
             title: 'desc',
+          },
+          include: {
+            images: {
+              select: {
+                url: true,
+              },
+            },
+            ProductDetails: true,
           },
         });
         break;
@@ -211,6 +227,14 @@ export class ProductsService {
           orderBy: {
             price: 'asc',
           },
+          include: {
+            images: {
+              select: {
+                url: true,
+              },
+            },
+            ProductDetails: true,
+          },
         });
         break;
       case 'PriceDesc':
@@ -220,12 +244,28 @@ export class ProductsService {
           orderBy: {
             price: 'desc',
           },
+          include: {
+            images: {
+              select: {
+                url: true,
+              },
+            },
+            ProductDetails: true,
+          },
         });
         break;
       default:
         productList = await this.prisma.product.findMany({
           skip: (page - 1) * offset,
           take: offset,
+          include: {
+            images: {
+              select: {
+                url: true,
+              },
+            },
+            ProductDetails: true,
+          },
         });
         break;
     }
