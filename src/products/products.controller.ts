@@ -11,7 +11,9 @@ import { ProductRegisterDTO } from './productRegisterDTO';
 import { ProductsService, TagsDTO } from './products.service';
 import { AdminGuard } from 'src/users/admin.guard';
 import { ProductDetailsDTO } from './productDetailsDTO';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
