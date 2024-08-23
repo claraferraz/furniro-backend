@@ -194,6 +194,7 @@ export class ProductsService {
             title: 'asc',
           },
         });
+        break;
       case 'AlphaDesc':
         productList = await this.prisma.product.findMany({
           skip: (page - 1) * offset,
@@ -202,6 +203,7 @@ export class ProductsService {
             title: 'desc',
           },
         });
+        break;
       case 'PriceAsc':
         productList = await this.prisma.product.findMany({
           skip: (page - 1) * offset,
@@ -210,19 +212,22 @@ export class ProductsService {
             price: 'asc',
           },
         });
+        break;
       case 'PriceDesc':
         productList = await this.prisma.product.findMany({
           skip: (page - 1) * offset,
           take: offset,
           orderBy: {
-            title: 'desc',
+            price: 'desc',
           },
         });
+        break;
       default:
         productList = await this.prisma.product.findMany({
           skip: (page - 1) * offset,
           take: offset,
         });
+        break;
     }
 
     return productList;
