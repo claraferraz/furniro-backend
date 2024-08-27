@@ -53,6 +53,15 @@ export class ProductsService {
           },
         },
         ProductDetails: true,
+        ProductTags: {
+          select: {
+            tags: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
     return product;
