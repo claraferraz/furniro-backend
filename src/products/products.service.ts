@@ -46,15 +46,13 @@ export class ProductsService {
       where: {
         id: id,
       },
-      select: {
-        id: true,
-        title: true,
-        subtitle: true,
-        description: true,
-        price: true,
-        discount: true,
-        new: true,
-        category: true,
+      include: {
+        images: {
+          select: {
+            url: true,
+          },
+        },
+        ProductDetails: true,
       },
     });
     return product;
@@ -184,6 +182,8 @@ export class ProductsService {
     Number.isNaN(page) ? (page = 1) : (page = page);
     Number.isNaN(offset) ? (offset = 16) : (offset = offset);
 
+    const total = await this.prisma.product.count();
+
     let productList;
     switch (order) {
       case 'AlphaAsc':
@@ -270,6 +270,9 @@ export class ProductsService {
         break;
     }
 
-    return productList;
+    return {
+      total: total,
+      productList: productList,
+    };
   }
 }

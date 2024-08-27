@@ -56,8 +56,8 @@ export class ProductsController {
     return await this.productsService.getProductsList(order, page, offset);
   }
 
-  @Get('/:detailsId')
-  async getProductDetails(@Param('detailsId') id: number) {
-    return await this.productsService.getProductDetails(id);
+  @Get('/:productId')
+  async getProduct(@Param('productId') id: number) {
+    return await this.productsService.getProductById(id);
   }
 }
