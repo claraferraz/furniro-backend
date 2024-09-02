@@ -1,23 +1,32 @@
-npx prisma migrate dev --name - atualiza o banco de dados
-npx prisma generate - atualiza o ts
-prima.alguma coisa acessa o ítem do banco de dados
-prisma.user.findMany() - mostra um array de objetos daquela tabela
+Instalação do projeto:
 
-front- apertar no boneco de perfil para direcionar para o login
-para finalizar a compra precisa estar logado, colocar o token para acesso à página
-depois de logar ter a possibilidade de voltar pra a tela de checkout
-tem que ter o role de admin e user
-recomenda trabalhar com jwt
-fazer o role de admin na tabela de usuário e para criar o admin somente pela API
-fazer controle de estoque, se o produto não tiver estoque, não pode adicionar no carrinho
-produtos com mais de uma cor e tamanho precisam ter o sku correspondentes
-fazer a requisição para as paginações do lado do servidor
-as filtagens também
+O projeto utiliza docker, postgreSQL no prisma, nest com typescript
 
-npx prisma generate
-In the future, you need to run this command after every change to your Prisma models to update your generated Prisma Client.
+- o docker compose está disponível no repositório
+- o banco de dados é o postgreSQL e na construção da api, utilizei o DBeaver para checar as informações
+- para rodar o projeto após a instalação
+
+```bash
+
+$ npm run start:dev
+
+```
+
+conteúdo do .env:
+DATABASE_URL="postgresql://usuario:123456789@localhost:5433/furniro?schema=public"
+JWT_KEY="asdasdqwdqwdasd"
+
+para VISUALIZAR as chamadas da API com suas rotas, bodies e params:
+instale o swagger e acesse:
+http://localhost:3000/api
+
+para utilizar a api recomendo o Postman pois algumas rotas são protegidas e precisam do token no authorization para serem acessadas
 
 npm i bcrypt - para encriptar as senhas no banco de dados
 npm install -D @types/bcrypt - para typescript
 
-https://www.youtube.com/watch?v=pRglv1AsrQs tutorial seguido
+npx prisma migrate dev --name - atualiza o banco de dados
+npx prisma generate - atualiza o ts
+
+https://www.youtube.com/watch?v=pRglv1AsrQs tutorial seguido para registro de usuário
+https://sa-east-1.console.aws.amazon.com/s3/buckets/furniroimagesc?region=sa-east-1&bucketType=general&tab=objects amazon S3 com o banco de imagens
