@@ -6,15 +6,18 @@ O projeto utiliza docker, postgreSQL no prisma, nest com typescript
 - o banco de dados é o postgreSQL e na construção da api, utilizei o DBeaver para checar as informações
 - para rodar o projeto após a instalação
 
+conteúdo do .env:
+DATABASE_URL="postgresql://usuario:123456789@localhost:5433/furniro?schema=public"
+JWT_KEY="asdasdqwdqwdasd"
+
 ```bash
+$ npm install
+
+$ npx prisma generate
 
 $ npm run start:dev
 
 ```
-
-conteúdo do .env:
-DATABASE_URL="postgresql://usuario:123456789@localhost:5433/furniro?schema=public"
-JWT_KEY="asdasdqwdqwdasd"
 
 para VISUALIZAR as chamadas da API com suas rotas, bodies e params:
 instale o swagger e acesse:
